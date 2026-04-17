@@ -37,7 +37,7 @@ void	check_ret_value(int ret, char *path, t_cmd *cmd, char **envp)
 		else if (errno == ENOEXEC)
 		{
 			if (cmd->argv[0][0] == '.' || cmd->argv[0][0] == '/')
-    			execve("/bin/sh", cmd->argv, envp);
+				execve("/bin/sh", cmd->argv, envp);
 			else
 				execve("/bin/sh", (char *[]){"sh", path, NULL}, envp);
 		}

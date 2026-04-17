@@ -44,31 +44,31 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char *resolve_cmd(char *cmd, char **envp)
+char	*resolve_cmd(char *cmd, char **envp)
 {
-    char **all_path;
-    char *path_env;
-    char *full_path;
-    int i;
+	char	**all_path;
+	char	*path_env;
+	char	*full_path;
+	int		i;
 
-    if (!cmd || cmd[0] == '\0')
-        return NULL;
-    if (ft_strchr(cmd, '/'))
-        return ft_strdup(cmd);
-    path_env = find_path(envp);
-    if (!path_env)
-        return NULL;
-    all_path = ft_split(path_env, ':');
-    if (!all_path)
-        return NULL;
-    i = 0;
-    while (all_path[i])
-    {
-        full_path = ft_strjoin_three(all_path[i], "/", cmd);
-        if (access(full_path, F_OK) == 0) // 👈 IMPORTANT: F_OK pas X_OK ici
-            return (ft_free_split(all_path), full_path);
-        free(full_path);
-        i++;
-    }
-    return (ft_free_split(all_path), NULL);
+	if (!cmd || cmd[0] == '\0')
+		return (NULL);
+	if (ft_strchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	path_env = find_path(envp);
+	if (!path_env)
+		return (NULL);
+	all_path = ft_split(path_env, ':');
+	if (!all_path)
+		return (NULL);
+	i = 0;
+	while (all_path[i])
+	{
+		full_path = ft_strjoin_three(all_path[i], "/", cmd);
+		if (access(full_path, F_OK) == 0)
+			return (ft_free_split(all_path), full_path);
+		free(full_path);
+		i++;
+	}
+	return (ft_free_split(all_path), NULL);
 }

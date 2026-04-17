@@ -79,13 +79,16 @@ char	*get_var(char *str, int *i)
 // 	free(str);
 // 	return (new_str);
 // }
-char *remove_quotes(char *str)
+char	*remove_quotes(char *str)
 {
-	char *res;
-	int i = 0;
-	int j = 0;
-	char quote = 0;
+	char	*res;
+	int		i;
+	int		j;
+	char	quote;
 
+	i = 0;
+	j = 0;
+	quote = 0;
 	res = malloc(strlen(str) + 1);
 	if (!res)
 		return (NULL);
@@ -101,5 +104,5 @@ char *remove_quotes(char *str)
 	}
 	res[j] = '\0';
 	free(str);
-	return res;
+	return (res);
 }

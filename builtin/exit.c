@@ -50,7 +50,7 @@ static int	exit_not_child(t_minish *minish, char **argv)
 {
 	long	arg;
 	char	*arg_cpy;
-	
+
 	if (argv[2])
 		return (exit_too_many_arg());
 	if (!argv[1])
@@ -63,7 +63,7 @@ static int	exit_not_child(t_minish *minish, char **argv)
 	{
 		arg_cpy = argv[1];
 		free_all(minish);
-		free_tab(minish->envp);	
+		free_tab(minish->envp);
 		exit_numeric_error(arg_cpy);
 	}
 	arg = ft_atol(argv[1]);
@@ -72,18 +72,18 @@ static int	exit_not_child(t_minish *minish, char **argv)
 	exit((unsigned char)arg);
 }
 
-int builtin_exit(t_minish *minish, char **argv, int is_child)
+int	builtin_exit(t_minish *minish, char **argv, int is_child)
 {
 	long	arg;
 
 	if (!is_child)
-		return(exit_not_child(minish, argv));
+		return (exit_not_child(minish, argv));
 	else
 	{
 		if (!argv[1])
 			exit(minish->g_exit_status);
 		if (!is_code_exit(argv[1]) || !verif_max_long(argv[1]))
-    		exit_numeric_error(argv[1]);
+			exit_numeric_error(argv[1]);
 		if (argv[2])
 			return (1);
 		arg = ft_atol(argv[1]);

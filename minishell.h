@@ -186,6 +186,11 @@ void	ft_free_split(char **split);
 // --- Heredoc --- //
 void	prepare_heredoc(t_cmd *cmds);
 
+/* remove empty argv */
+
+void	remove_empty_argv(t_cmd *cmd);
+int		count_non_empty(char **argv);
+
 void	exit_minish(void);
 
 /* global variable for SIGNAL */

@@ -47,9 +47,10 @@ char	*remove_quotes_filename(char *str)
 
 int	apply_redir_in(t_redir *redir)
 {
-	int	fd;
-	char *filename = remove_quotes_filename(redir->filename);
+	int		fd;
+	char	*filename;
 
+	filename = remove_quotes_filename(redir->filename);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
@@ -65,10 +66,11 @@ int	apply_redir_in(t_redir *redir)
 
 int	apply_redir_out(t_redir *redir)
 {
-	int	fd;
-	int	flags;
-	char *filename = remove_quotes_filename(redir->filename);
+	int		fd;
+	int		flags;
+	char	*filename;
 
+	filename = remove_quotes_filename(redir->filename);
 	if (redir->type == TOKEN_APPEND)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	else

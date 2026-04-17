@@ -35,7 +35,7 @@ static int	verif_export(char *str)
 	{
 		while (str[i] == '_' || isalnum(str[i]))
 		{
-			if (str[i + 1] == '\0' 
+			if (str[i + 1] == '\0'
 				|| (str[i + 1] == '=' && str[i + 2]))
 				return (1);
 			i++;
@@ -63,7 +63,7 @@ static int	export_invalid_id(char *argv)
 	(void)argv;
 	write(2, "export: ", 8);
 	write(2, "not a valid identifier\n", 23);
-	return (1);	
+	return (1);
 }
 
 int	builtin_export(t_minish *minish, char **argv)

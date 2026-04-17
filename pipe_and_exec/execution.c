@@ -42,13 +42,14 @@ static void	exec_single(t_minish *minish)
 		g_exit_status = minish->g_exit_status;
 	}
 }
-/* on waitpid tous les pids et on check le status ainsi que si on a eu un signal pour les pipes*/
+/* on waitpid tous les pids et on check le status ainsi 
+ * que si on a eu un signal pour les pipes */
 
-static void waitpid_all(t_minish *minish, int nb_cmds, pid_t *pids)
+static void	waitpid_all(t_minish *minish, int nb_cmds, pid_t *pids)
 {
-	int i;
-	int status;
-	int signal;
+	int	i;
+	int	status;
+	int	signal;
 	int	written;
 
 	i = 0;
@@ -116,72 +117,27 @@ static void	exec_multi(t_minish *minish, t_exec *exec)
 	free_pipes(exec->pipes, exec->nb_cmds - 1);
 	free(pids);
 }
-
-int	count_non_empty(char **argv)
-{
-	int	i;
-	int	j;
-	int	result;
-
-	i = 0;
-	j = 0;
-	result = 0;
-	while (argv[i])
-	{
-		if (argv[i][j] != '\0')
-			result++;
-		i++;
-	}
-	return (result);
-}
-
-void remove_empty_argv(t_cmd *cmd)
-{
-    int i;
-    int j;
-    char **new;
-
-    if (!cmd || !cmd->argv)
-        return;
-
-    new = malloc(sizeof(char *) * (count_non_empty(cmd->argv) + 1));
-    if (!new)
-        return;
-    i = 0;
-	j = 0;
-    while (cmd->argv[i])
-    {
-        if (cmd->argv[i][0] != '\0')
-		{
-            new[j] = cmd->argv[i];
-			j++;
-		}
-        i++;
-    }
-    new[j] = NULL;
-
-    free(cmd->argv);
-    cmd->argv = new;
-}
-
 /* ---- Main execute function ---- */
 
 void	execute(t_minish *minish)
 {
 	t_exec	exec;
-	t_cmd *cur = minish->cmds;
+	t_cmd	*cur;
 
+	cur = minish->cmds;
 	signal(SIGPIPE, SIG_IGN);
 	while (cur)
 	{
-    	remove_empty_argv(cur);
-    	cur = cur->next;
+		remove_empty_argv(cur);
+		cur = cur->next;
 	}
 	prepare_heredoc(minish->cmds);
 	exec.nb_cmds = count_cmds(minish->cmds);
 	if (exec.nb_cmds == 1)
 	{
-		if (!minish->cmds->argv || !minish->cmds->argv[0] || (minish->cmds->argv[0][0] == '\0' && minish->cmds->argv[1] == NULL))
+		if (!minish->cmds->argv || !minish->cmds->argv[0]
+			|| (minish->cmds->argv[0][0] == '\0'
+			&& minish->cmds->argv[1] == NULL))
 			return ;
 		exec_single(minish);
 		return ;

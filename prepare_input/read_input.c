@@ -15,8 +15,8 @@
 static int	verif_quotes(const char *str)
 {
 	int	i;
-	int flag_in_one;
-	int flag_in_two;
+	int	flag_in_one;
+	int	flag_in_two;
 
 	flag_in_one = 0;
 	flag_in_two = 0;

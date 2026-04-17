@@ -76,7 +76,7 @@ int	change_value(char **envp, char *key, char *str)
 	{
 		if (ft_strncmp(envp[i], key, ft_strlen(key)) == 0
 			&& (envp[i][ft_strlen(key)] == '='
-				|| envp[i][ft_strlen(key)] == '\0'))
+			|| envp[i][ft_strlen(key)] == '\0'))
 		{
 			free(envp[i]);
 			envp[i] = ft_strdup(str);
