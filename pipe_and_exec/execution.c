@@ -32,6 +32,7 @@ static void	exec_single(t_minish *minish)
 			if (apply_redirs(minish->cmds->redirs))
 				exit(1);
 		}
+		signal(SIGPIPE, SIG_DFL);
 		exec_external(minish->cmds, minish->envp);
 	}
 	waitpid(pid, &status, 0);
@@ -41,19 +42,32 @@ static void	exec_single(t_minish *minish)
 		g_exit_status = minish->g_exit_status;
 	}
 }
+/* on waitpid tous les pids et on check le status ainsi que si on a eu un signal pour les pipes*/
 
 static void waitpid_all(t_minish *minish, int nb_cmds, pid_t *pids)
 {
-	int	i;
-	int	status;
+	int i;
+	int status;
+	int signal;
+	int	written;
 
 	i = 0;
-	waitpid(pids[nb_cmds - 1], &status, 0);
-	if (WIFEXITED(status))
-		minish->g_exit_status = WEXITSTATUS(status);
-	while (i < nb_cmds - 1)
+	written = 0;
+	while (i < nb_cmds)
 	{
-		waitpid(pids[i], NULL, 0);
+		waitpid(pids[i], &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			signal = WTERMSIG(status);
+			if (signal == SIGPIPE && !written)
+			{
+				ft_putstr_fd("minishell: Broken pipe\n", 2);
+				written = 1;
+			}
+			minish->g_exit_status = 128 + signal;
+		}
+		else if (WIFEXITED(status))
+			minish->g_exit_status = WEXITSTATUS(status);
 		i++;
 	}
 }
@@ -146,7 +160,7 @@ void remove_empty_argv(t_cmd *cmd)
     }
     new[j] = NULL;
 
-    free(cmd->argv); // ⚠️ seulement si tu veux remplacer proprement
+    free(cmd->argv);
     cmd->argv = new;
 }
 
@@ -157,6 +171,7 @@ void	execute(t_minish *minish)
 	t_exec	exec;
 	t_cmd *cur = minish->cmds;
 
+	signal(SIGPIPE, SIG_IGN);
 	while (cur)
 	{
     	remove_empty_argv(cur);
