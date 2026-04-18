@@ -57,28 +57,6 @@ char	*get_var(char *str, int *i)
 	free(var_name);
 	return (var);
 }
-
-// char	*remove_quotes(char *str)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	*new_str;
-
-// 	new_str = malloc(sizeof(char) * strlen(str) - 2 + 1);
-// 	if (!new_str)
-// 		return (NULL);
-// 	i = 1;
-// 	j = 0;
-// 	while (str[i + 1])
-// 	{
-// 		new_str[j] = str[i];
-// 		i++;
-// 		j++;
-// 	}
-// 	new_str[j] = '\0';
-// 	free(str);
-// 	return (new_str);
-// }
 char	*remove_quotes(char *str)
 {
 	char	*res;
