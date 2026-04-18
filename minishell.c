@@ -109,8 +109,6 @@ int	main(int ac, char **av, char **envp)
 			break ;
 		add_history(minish.input);
 		minish.tokens = tokenize(minish.input);
-		if (g_exit_status)
-			minish.g_exit_status = g_exit_status;
 		minish.cmds = expansion(minish, parser(minish.tokens));
 		execute(&minish);
 		free_all(&minish);

@@ -44,7 +44,7 @@ static void	write_heredoc(int fd, char *delimiter)
 	}
 }
 
-static void	handle_heredoc(t_redir *redir)
+static void	handle_heredoc(t_minish *minish, t_redir *redir)
 {
 	int		fd;
 
@@ -52,7 +52,7 @@ static void	handle_heredoc(t_redir *redir)
 	if (fd < 0)
 	{
 		perror("heredoc");
-		g_exit_status = 1;
+		minish->g_exit_status = 1;
 		return ;
 	}
 	write_heredoc(fd, redir->filename);
@@ -61,7 +61,7 @@ static void	handle_heredoc(t_redir *redir)
 	redir->filename = ft_strdup("/tmp/minishell_heredoc");
 }
 
-void	prepare_heredoc(t_cmd *cmds)
+void	prepare_heredoc(t_minish *minish, t_cmd *cmds)
 {
 	t_cmd	*cur;
 	t_redir	*redir;
@@ -73,7 +73,7 @@ void	prepare_heredoc(t_cmd *cmds)
 		while (redir)
 		{
 			if (redir->type == TOKEN_HEREDOC)
-				handle_heredoc(redir);
+				handle_heredoc(minish, redir);
 			redir = redir->next;
 		}
 		cur = cur->next;

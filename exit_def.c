@@ -12,8 +12,6 @@
 
 #include <minishell.h>
 
-int	g_exit_status = 0;
-
 void	exit_minish(void)
 {
 	printf("exit\n");

@@ -184,7 +184,7 @@ void	free_cmds(t_cmd *cmds);
 void	ft_free_split(char **split);
 
 // --- Heredoc --- //
-void	prepare_heredoc(t_cmd *cmds);
+void	prepare_heredoc(t_minish *minish, t_cmd *cmds);
 
 /* remove empty argv */
 
@@ -194,6 +194,7 @@ int		count_non_empty(char **argv);
 void	exit_minish(void);
 
 /* global variable for SIGNAL */
-extern int	g_exit_status;
+
+extern int	g_signal;
 
 #endif

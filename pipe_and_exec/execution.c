@@ -37,10 +37,7 @@ static void	exec_single(t_minish *minish)
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-	{
 		minish->g_exit_status = WEXITSTATUS(status);
-		g_exit_status = minish->g_exit_status;
-	}
 }
 /* we waitpid all the pids and we check the status and 
  * if we got a signal for pipes */
@@ -131,7 +128,7 @@ void	execute(t_minish *minish)
 		remove_empty_argv(cur);
 		cur = cur->next;
 	}
-	prepare_heredoc(minish->cmds);
+	prepare_heredoc(minish, minish->cmds);
 	exec.nb_cmds = count_cmds(minish->cmds);
 	if (exec.nb_cmds == 1)
 	{
