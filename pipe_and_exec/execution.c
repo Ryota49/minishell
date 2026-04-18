@@ -42,8 +42,8 @@ static void	exec_single(t_minish *minish)
 		g_exit_status = minish->g_exit_status;
 	}
 }
-/* on waitpid tous les pids et on check le status ainsi 
- * que si on a eu un signal pour les pipes */
+/* we waitpid all the pids and we check the status and 
+ * if we got a signal for pipes */
 
 static void	waitpid_all(t_minish *minish, int nb_cmds, pid_t *pids)
 {
