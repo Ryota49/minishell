@@ -2,11 +2,43 @@
 
 
 *This project has been created as part
-of the 42 curriculum by anfouger and jemonthi.*
+of the 42 curriculum by anfouger, jemonthi.*
 
 # Description
 
-Minishell is a 42 project where you have to recreate a shell. You will need a working history, Display a promps when waiting for a new command, search and launch the right executable, 
+Minishell is a 42 project where you have to recreate a shell. You will need a working history, Display a promps when waiting for a new command, search and launch the right executable.  
+
+**Here are some exemple below of what should work** : 
+
+◦ ctrl-C displays a new prompt on a new line.  
+◦ ctrl-D exits the shell.  
+◦ ctrl-\ does nothing.  
+
+**Implement the following redirections:**  
+◦ < should redirect input.  
+◦ > should redirect output.  
+◦ << should be given a delimiter, then read the input until a line containing the
+delimiter is seen. However, it doesn’t have to update the history!  
+◦ >> should redirect output in append mode.  
+
+**Implement pipes (| character). The output of each command in the pipeline is
+connected to the input of the next command via a pipe.**  
+
+**Handle environment variables (followed by a sequence of characters) which
+should expand to their values.**  
+
+**Handle $? which should expand to the exit status of the most recently executed
+foreground pipeline.**  
+
+**The shell must implement the following built-in commands**:  
+◦ echo with option -n  
+◦ cd with only a relative or absolute path  
+◦ pwd with no options  
+◦ export with no options  
+◦ unset with no options  
+◦ env with no options or arguments  
+◦ exit with no options  
+
 
 
 # Instructions
@@ -15,32 +47,29 @@ To compile all the files just run **make** at the root of the repository.
 
 > make
 
-It will create the executable "philo", to test it just type like the example below :
+It will create the executable "minishell", to test it just type like the example below :
 
-> ./philo 5 4000 200 200
+> ./minishell
 
-It will create 5 philosophers that should be eating, sleeping and thinking without finishing for this example.
+You will be inside the shell of minishell, you should see a display promps on the right saying minishell. Now you are ready to test all the command requiered in the subject !
 
-If you wanna test to put 6 args with a number_of_time_each_philosophers_must_eat : 
+For example, if you want to test a simple builtin of minishell, write inside the minishell :
 
-> ./philo 5 4000 200 200 10
+> echo hi
 
-Each philosophers will eat 10 meals before the simulation stops.
+You are free to do your own test ! you can test pipes, redirections infile/outfile, the builtins...
 
-You can also check with a low number in time_to_die to see the simulation stops when a philosopher dies like below :
+If you want to leave the minishell, just type :
 
-> ./philo 5 400 200 200 10
+> exit
 
-You can test with any number > 0 and <= INT_MAX, but remember, the higher your number is, the more time it will take to finish the simulation. I recommend you to use with low number and a max of 10000 if you don't wanna wait too long.
-
+you will be back to the main shell.
 # Ressources
 
-Here are some documentations i have read/watched during the project :
+Here are some documentations we have read/watched during the project (we didn't save all of the website we went tbh):
 
-- https://man7.org/linux/man-pages/man2/gettimeofday.2.html
-- https://youtu.be/mvZKu0DfFLQ?si=m0EfL-oNV_iRMda0
-- https://www.ibm.com/docs/fr/aix/7.3.0?topic=programming-using-mutexes
-- https://man7.org/linux/man-pages/man3/usleep.3.html
-- https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3.html
-- https://koor.fr/C/cthreads/Index.wp
-- https://www.youtube.com/watch?v=VYPcmMo1sYk
+- https://www.youtube.com/watch?v=IGW8-yeYRgI
+- https://codesignal.com/learn/courses/bash-script-error-handling/lessons/understanding-exit-statuses
+- https://man7.org/linux/man-pages/man3/errno.3.html
+
+Most of the *man* of the allowed functions has been reviewed too.
