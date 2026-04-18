@@ -57,6 +57,7 @@ char	*get_var(char *str, int *i)
 	free(var_name);
 	return (var);
 }
+
 char	*remove_quotes(char *str)
 {
 	char	*res;
