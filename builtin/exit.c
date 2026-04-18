@@ -51,7 +51,7 @@ static int	exit_not_child(t_minish *minish, char **argv)
 	long	arg;
 	char	*arg_cpy;
 
-	if (argv[2])
+	if (argv[1] != NULL && argv[2])
 		return (exit_too_many_arg());
 	if (!argv[1])
 	{
