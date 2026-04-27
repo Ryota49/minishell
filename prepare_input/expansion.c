@@ -6,19 +6,19 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 12:40:40 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/23 13:54:22 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/24 09:49:52 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static void	var_case(char *str, char **new_str, int	*i)
+static void	var_case(char **envp, char *str, char **new_str, int *i)
 {
 	char	*var;
 	int		i_var;
 
 	i_var = 0;
-	var = get_var(str, *(&i));
+	var = get_var(envp, str, i);
 	if (!var)
 		*new_str = NULL;
 	while (var && var[i_var])
@@ -28,6 +28,8 @@ static void	var_case(char *str, char **new_str, int	*i)
 			return ;
 		i_var++;
 	}
+	if (var)
+		free(var);
 }
 
 static void	do_expansion(char **str, char **new_str, int *i, t_minish minish)
@@ -38,7 +40,7 @@ static void	do_expansion(char **str, char **new_str, int *i, t_minish minish)
 	*i += 1;
 	if ((*str)[*i] == '?')
 	{
-		value = ft_itoa(minish.g_exit_status);
+		value = ft_itoa(minish.exit_status);
 		tmp = ft_strjoin(*new_str, value);
 		free(*new_str);
 		*new_str = tmp;
@@ -46,7 +48,7 @@ static void	do_expansion(char **str, char **new_str, int *i, t_minish minish)
 		*i += 1;
 	}
 	else
-		var_case(*str, *(&new_str), *(&i));
+		var_case(minish.env->envp, *str, new_str, i);
 	if (!*str || !*new_str)
 	{
 		*new_str = NULL;
@@ -101,10 +103,9 @@ t_cmd	*expansion(t_minish minish, t_cmd *cmds)
 	while (p_cmds)
 	{
 		i = 0;
-		while (p_cmds->argv[i])
+		while (p_cmds->argv && p_cmds->argv[i])
 		{
-			if (p_cmds->argv[i][0] != '\'')
-				p_cmds->argv[i] = create_new_arg(p_cmds->argv[i], minish);
+			p_cmds->argv[i] = create_new_arg(p_cmds->argv[i], minish);
 			p_cmds->argv[i] = remove_quotes(p_cmds->argv[i]);
 			i++;
 		}

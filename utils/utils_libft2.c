@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 10:02:02 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/14 10:57:21 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/19 11:52:43 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	ft_strcmp(const char *s1, const char *s2)
 	size_t	i;
 
 	i = 0;
+	if (s1[0] == '\0' && s2[0] != '\0')
+		return (0);
 	while (s1[i])
 	{
 		if ((unsigned char)s1[i] == (unsigned char)s2[i])
@@ -42,25 +44,31 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (1);
 }
 
-long	verif_max_long(char *s)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	int		i;
-	int		sign;
-	long	res;
+	unsigned char	*res;
+
+	if (nmemb != 0 && nmemb * size / nmemb != size)
+		return (NULL);
+	if (!nmemb || !size)
+		return (malloc(0));
+	res = malloc (nmemb * size);
+	if (res != NULL)
+		ft_memset(res, 0, nmemb * size);
+	return (res);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*s2;
+	size_t			i;
 
 	i = 0;
-	sign = 1;
-	res = 0;
-	if (s[i] == '+' || s[i] == '-')
-		if (s[i++] == '-')
-			sign = -1;
-	while (s[i] >= '0' && s[i] <= '9')
+	s2 = (unsigned char *)s;
+	while (i < n)
 	{
-		if (sign == 1 && res > (LONG_MAX - (s[i] - '0')) / 10)
-			return (0);
-		if (sign == -1 && res > (-(LONG_MIN + (s[i] - '0'))) / 10)
-			return (0);
-		res = res * 10 + (s[i++] - '0');
+		s2[i] = c;
+		i++;
 	}
-	return (1);
+	return (s);
 }

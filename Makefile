@@ -56,11 +56,14 @@ SRCS    = minishell.c \
 		$(UTILS_DIR)/ft_strjoin.c \
 		$(UTILS_DIR)/ft_itoa.c \
 		$(UTILS_DIR)/ft_atol.c \
+		$(UTILS_DIR)/ft_is.c \
+		$(UTILS_DIR)/verif_long.c \
 		$(UTILS_DIR)/utils_token.c \
 		$(UTILS_DIR)/utils_cmd.c \
 		$(UTILS_DIR)/utils_expansion.c \
 		$(UTILS_DIR)/utils_exec.c \
 		$(UTILS_DIR)/utils_builtin.c \
+		$(UTILS_DIR)/utils_envp.c \
 		$(EXEC_DIR)/check_builtins.c \
 		$(EXEC_DIR)/execution.c \
 		$(EXEC_DIR)/execution_utils.c \
@@ -69,7 +72,8 @@ SRCS    = minishell.c \
 		$(EXEC_DIR)/dup_and_redir.c \
 		$(EXEC_DIR)/child_process.c \
 		$(EXEC_DIR)/heredoc.c \
-		$(EXEC_DIR)/remove_empty_argv.c 
+		$(EXEC_DIR)/remove_empty_argv.c \
+		$(EXEC_DIR)/free_and_exit.c 
 
 OBJS    = $(SRCS:.c=.o)
 

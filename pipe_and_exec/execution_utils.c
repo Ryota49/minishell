@@ -62,3 +62,13 @@ void	ft_putstr_fd(char *s, int fd)
 		return ;
 	write(fd, s, ft_strlen(s));
 }
+
+void	end_of_exec_single(t_minish *minish, int status)
+{
+	if (WIFEXITED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		minish->exit_status = WEXITSTATUS(status);
+	}
+}

@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 13:35:28 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/14 10:16:04 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/26 09:40:36 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@ typedef enum e_token_type
 	TOKEN_APPEND
 }	t_token_type;
 
+typedef struct s_env
+{
+	char	**envp;
+	int		*has_value;
+	int		*exported;
+}	t_env;
+
 typedef struct s_token
 {
 	t_token_type	type;
@@ -62,9 +69,9 @@ typedef struct s_cmd
 
 typedef struct s_minish
 {
-	int		g_exit_status;
+	int		exit_status;
 	char	*input;
-	char	**envp;
+	t_env	*env;
 	t_token	*tokens;
 	t_cmd	*cmds;
 }	t_minish;
@@ -74,6 +81,10 @@ typedef struct s_exec
 	int		nb_cmds;
 	int		**pipes;
 }	t_exec;
+
+// --- Utils envp --- //
+t_env	*init_envp(char **tab);
+int		is_value_empty(char *str);
 
 // --- Utils Libft --- //
 size_t	ft_strlen(const char *s);
@@ -86,14 +97,20 @@ int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_itoa(int n);
-int		tab_len(char **tab);
+int		tab_str_len(char **tab);
 long	ft_atol(char *str);
-long	verif_max_long(char *s);
+int		verif_long(char *s);
+int		ft_isalnum(int x);
+int		ft_isalpha(int x);
+int		ft_isdigit(int x);
+void	*ft_memset(void *s, int c, size_t n);
+void	*ft_calloc(size_t nmemb, size_t size);
 
 // --- Utils Tab --- //
-void	free_tab(char **s);
-char	**dup_tab(char **tab);
-void	clean_tab(char **tab, int i);
+void	free_str_tab(char **s);
+char	**dup_str_tab(char **tab);
+void	clean_str_tab(char **tab, int i);
+int		*add_value_tab_int(int *tab, int value, int len_tab);
 
 // --- Utils Token --- //
 void	add_token(t_token **lst, t_token *new);
@@ -108,19 +125,20 @@ void	add_redir(t_cmd *cmd, t_token_type type, char *filename);
 // --- Utils Expansion --- //
 int		is_expandable(char c);
 int		is_char_var(char c);
-char	*get_var(char *str, int *i);
+char	*get_var(char **envp, char *str, int *i);
 char	*remove_quotes(char *str);
-int		contains_valid_quotes(char *str);
 
 // --- Utils Exec --- //
 int		is_slash_in(char *str);
 int		is_builtin(char *cmd);
+void	end_of_exec_single(t_minish *minish, int status);
 
 // --- Utils Builtin --- //
 char	*get_env_value(char **envp, char *str);
-char	**add_var(char **tab, char *str);
-int		change_value(char **envp, char *key, char *str);
+char	**add_var(t_env *env, char **tab, char *str);
+int		change_value(t_env *env, char *key, char *str);
 char	*get_key(char *str);
+void	print_export(char *str);
 
 // --- Signals --- //
 void	handle_sigint(int sig);
@@ -129,16 +147,15 @@ void	setup_signals(void);
 // --- Prepare Input --- //
 char	*read_input(void);
 t_token	*tokenize(const char *input);
-t_cmd	*parser(t_token *tokens);
+t_cmd	*parser(t_minish *minish, t_token *tokens);
 t_cmd	*expansion(t_minish minish, t_cmd *cmds);
 
-// // --- Exec --- //
-// void	exec(t_minish *minish);
+// // --- Exec --- // //
 
-// --- Buitin --- //
-int		builtin_cd(char **argv, char **envp);
+// --- Builtin --- //
+int		builtin_cd(char **argv, t_env *env);
 int		builtin_echo(char **argv);
-int		builtin_env(char **envp, char **argv);
+int		builtin_env(t_env *env, char **argv);
 int		builtin_pwd(void);
 int		builtin_export(t_minish *minish, char **argv);
 int		builtin_unset(t_minish *minish, char **argv);
@@ -175,11 +192,11 @@ int		apply_redir_in(t_redir *redir);
 
 /* child process functions */
 void	child_process(t_minish *minish, t_cmd *cmd, int i, t_exec *exec);
-void	exec_external(t_cmd *cmd, char **envp);
+void	exec_external(t_minish *minish, t_exec *exec);
 void	setup_pipes_child(int i, int nb_cmds, int **pipes);
 
 // --- Free --- //
-void	free_all(t_minish *minish);
+void	free_all(t_minish *minish, int end);
 void	free_cmds(t_cmd *cmds);
 void	ft_free_split(char **split);
 
@@ -190,6 +207,15 @@ void	prepare_heredoc(t_minish *minish, t_cmd *cmds);
 
 void	remove_empty_argv(t_cmd *cmd);
 int		count_non_empty(char **argv);
+
+/* signal for single pid (exec single) */
+void	prepare_single_pid(t_minish *minish, t_exec *exec);
+
+/* call free function for pid process */
+void	call_free_all(char *path, t_minish *minish, t_exec *exec);
+void	free_minish_exit_zero(t_minish *minish, t_exec *exec);
+void	free_minish_exit_one(t_minish *minish, t_exec *exec);
+void	free_child_pipes(t_exec *exec);
 
 void	exit_minish(void);
 

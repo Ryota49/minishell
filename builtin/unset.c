@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 14:22:21 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/17 14:35:11 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/24 10:25:01 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	copy_tab_less_i(char **tab, char **new_tab, int index)
 		}
 		new_tab[i] = ft_strdup(tab[j]);
 		if (!new_tab[i])
-			clean_tab(new_tab, i);
+			clean_str_tab(new_tab, i);
 		i++;
 		j++;
 	}
@@ -39,11 +39,11 @@ static char	**dup_tab_less_i(char **tab, int index)
 {
 	char	**new_tab;
 
-	new_tab = malloc(sizeof(char *) * tab_len(tab));
+	new_tab = malloc(sizeof(char *) * tab_str_len(tab));
 	if (!new_tab)
 		return (NULL);
 	copy_tab_less_i(tab, new_tab, index);
-	free_tab(tab);
+	free_str_tab(tab);
 	return (new_tab);
 }
 
@@ -68,9 +68,9 @@ int	builtin_unset(t_minish *minish, char **argv)
 
 	if (!argv[1])
 		return (0);
-	i = get_index(minish->envp, argv[1]);
+	i = get_index(minish->env->envp, argv[1]);
 	if (i == -1)
 		return (0);
-	minish->envp = dup_tab_less_i(minish->envp, i);
+	minish->env->envp = dup_tab_less_i(minish->env->envp, i);
 	return (0);
 }

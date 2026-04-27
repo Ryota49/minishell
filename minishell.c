@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 09:17:32 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/14 11:50:50 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/26 09:43:21 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static t_minish	init_minish(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-	minish.g_exit_status = 0;
-	minish.envp = dup_tab(envp);
+	minish.exit_status = 0;
+	minish.env = init_envp(envp);
 	minish.input = NULL;
 	minish.tokens = NULL;
 	minish.cmds = NULL;
@@ -31,19 +31,25 @@ int	main(int ac, char **av, char **envp)
 	t_minish	minish;
 
 	minish = init_minish(ac, av, envp);
-	setup_signals();
 	while (1)
 	{
+		if (!minish.env)
+			break ;
+		setup_signals();
 		minish.input = read_input();
 		if (!minish.input)
 			break ;
 		add_history(minish.input);
 		minish.tokens = tokenize(minish.input);
-		minish.cmds = expansion(minish, parser(minish.tokens));
-		execute(&minish);
-		free_all(&minish);
+		if (g_signal != 0)
+			minish.exit_status = g_signal;
+		minish.cmds = expansion(minish, parser(&minish, minish.tokens));
+		signal(SIGINT, SIG_IGN);
+		if (minish.cmds)
+			execute(&minish);
+		free_all(&minish, 0);
 	}
-	free_tab(minish.envp);
+	free_all(&minish, 1);
 	exit_minish();
 	return (0);
 }

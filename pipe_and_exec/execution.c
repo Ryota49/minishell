@@ -14,7 +14,7 @@
 
 /* ---- Single command execution (no pipe)---- */
 
-static void	exec_single(t_minish *minish)
+static void	exec_single(t_minish *minish, t_exec *exec)
 {
 	pid_t	pid;
 	int		status;
@@ -26,48 +26,43 @@ static void	exec_single(t_minish *minish)
 	}
 	pid = fork();
 	if (pid == 0)
-	{
-		if (minish->cmds->redirs)
-		{
-			if (apply_redirs(minish->cmds->redirs))
-				exit(1);
-		}
-		signal(SIGPIPE, SIG_DFL);
-		exec_external(minish->cmds, minish->envp);
-	}
+		prepare_single_pid(minish, exec);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		minish->g_exit_status = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		minish->exit_status = 128 + WTERMSIG(status);
+	}
+	else if (WIFEXITED(status))
+		minish->exit_status = WEXITSTATUS(status);
 }
-/* we waitpid all the pids and we check the status and 
- * if we got a signal for pipes */
 
 static void	waitpid_all(t_minish *minish, int nb_cmds, pid_t *pids)
 {
-	int	i;
-	int	status;
-	int	signal;
-	int	written;
+	int		i;
+	int		status;
+	int		last_status;
+	pid_t	last_pid;
 
+	last_pid = pids[nb_cmds - 1];
 	i = 0;
-	written = 0;
+	last_status = 0;
 	while (i < nb_cmds)
 	{
 		waitpid(pids[i], &status, 0);
-		if (WIFSIGNALED(status))
-		{
-			signal = WTERMSIG(status);
-			if (signal == SIGPIPE && !written)
-			{
-				ft_putstr_fd("minishell: Broken pipe\n", 2);
-				written = 1;
-			}
-			minish->g_exit_status = 128 + signal;
-		}
-		else if (WIFEXITED(status))
-			minish->g_exit_status = WEXITSTATUS(status);
+		if (pids[i] == last_pid)
+			last_status = status;
 		i++;
 	}
+	if (WIFSIGNALED(last_status))
+	{
+		if (WTERMSIG(last_status) == SIGINT)
+			write(1, "\n", 1);
+		minish->exit_status = 128 + WTERMSIG(last_status);
+	}
+	else if (WIFEXITED(last_status))
+		minish->exit_status = WEXITSTATUS(last_status);
 }
 
 /* ---- Multi command execution (atleast 1 pipe)---- */
@@ -136,7 +131,7 @@ void	execute(t_minish *minish)
 			|| (minish->cmds->argv[0][0] == '\0'
 			&& minish->cmds->argv[1] == NULL))
 			return ;
-		exec_single(minish);
+		exec_single(minish, &exec);
 		return ;
 	}
 	exec.pipes = create_pipes(exec.nb_cmds - 1);

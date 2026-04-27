@@ -12,6 +12,12 @@
 
 #include "minishell.h"
 
+void	close_fd_saved(int saved_stdout, int saved_stdin)
+{
+	close(saved_stdout);
+	close(saved_stdin);
+}
+
 // Return 1 if it's a builtin //
 int	is_builtin(char *cmd)
 {
@@ -40,7 +46,7 @@ void	exec_single_builtin(t_minish *minish)
 	{
 		if (apply_redirs(minish->cmds->redirs))
 		{
-			minish->g_exit_status = 1;
+			minish->exit_status = 1;
 			dup2(saved_stdin, STDIN_FILENO);
 			dup2(saved_stdout, STDOUT_FILENO);
 			close(saved_stdin);
@@ -48,7 +54,9 @@ void	exec_single_builtin(t_minish *minish)
 			return ;
 		}
 	}
-	minish->g_exit_status = exec_builtin(minish->cmds, minish, 0);
+	if (ft_strncmp(minish->cmds->argv[0], "exit", 5) == 0)
+		close_fd_saved(saved_stdout, saved_stdin);
+	minish->exit_status = exec_builtin(minish->cmds, minish, 0);
 	dup2(saved_stdout, STDOUT_FILENO);
 	dup2(saved_stdin, STDIN_FILENO);
 	close(saved_stdout);
@@ -59,7 +67,7 @@ void	exec_single_builtin(t_minish *minish)
 int	exec_builtin(t_cmd *cmd, t_minish *minish, int is_child)
 {
 	if (ft_strncmp(cmd->argv[0], "cd", 3) == 0)
-		return (builtin_cd(cmd->argv, minish->envp));
+		return (builtin_cd(cmd->argv, minish->env));
 	if (ft_strncmp(cmd->argv[0], "echo", 5) == 0)
 		return (builtin_echo(cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "export", 7) == 0)
@@ -69,7 +77,7 @@ int	exec_builtin(t_cmd *cmd, t_minish *minish, int is_child)
 	if (ft_strncmp(cmd->argv[0], "unset", 6) == 0)
 		return (builtin_unset(minish, cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "env", 4) == 0)
-		return (builtin_env(minish->envp, cmd->argv));
+		return (builtin_env(minish->env, cmd->argv));
 	if (ft_strncmp(cmd->argv[0], "exit", 5) == 0)
 		return (builtin_exit(minish, cmd->argv, is_child));
 	return (0);

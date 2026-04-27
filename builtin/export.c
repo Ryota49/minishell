@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 14:22:14 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/25 08:51:12 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/26 09:40:57 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	verif_export(char *str)
 		while (str[i] == '_' || isalnum(str[i]))
 		{
 			if (str[i + 1] == '\0'
-				|| (str[i + 1] == '=' && str[i + 2]))
+				|| (str[i + 1] == '='))
 				return (1);
 			i++;
 		}
@@ -50,9 +50,12 @@ static int	export_no_args(t_minish *minish)
 	int	i;
 
 	i = 0;
-	while (minish->envp[i])
+	while (minish->env->envp[i])
 	{
-		printf("declare -x %s\n", minish->envp[i]);
+		if (!minish->env->has_value[i] && minish->env->exported[i])
+			printf("declare -x %s\n", minish->env->envp[i]);
+		else
+			print_export(minish->env->envp[i]);
 		i++;
 	}
 	return (0);
@@ -86,8 +89,9 @@ int	builtin_export(t_minish *minish, char **argv)
 		key = get_key(argv[i]);
 		if (!key)
 			return (1);
-		if (!change_value(minish->envp, key, argv[i]))
-			minish->envp = add_var(minish->envp, argv[i]);
+		if (!change_value(minish->env, key, argv[i]))
+			minish->env->envp = add_var(minish->env,
+					minish->env->envp, argv[i]);
 		free(key);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 09:39:54 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/23 13:43:54 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/22 10:07:57 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	is_char_var(char c)
 	return (0);
 }
 
-char	*get_var(char *str, int *i)
+char	*get_var(char **envp, char *str, int *i)
 {
 	char	*var_name;
 	char	*var;
@@ -51,9 +51,9 @@ char	*get_var(char *str, int *i)
 		i_name++;
 	}
 	var_name[i_name] = '\0';
-	var = getenv(var_name);
+	var = get_env_value(envp, var_name);
 	if (!var)
-		var = "";
+		var = calloc(1, 1);
 	free(var_name);
 	return (var);
 }
@@ -68,7 +68,7 @@ char	*remove_quotes(char *str)
 	i = 0;
 	j = 0;
 	quote = 0;
-	res = malloc(strlen(str) + 1);
+	res = malloc(ft_strlen(str) + 1);
 	if (!res)
 		return (NULL);
 	while (str[i])

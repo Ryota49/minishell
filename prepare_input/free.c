@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 14:11:42 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/11 10:30:50 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/26 09:42:19 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-void	free_tab(char **tab)
+void	free_str_tab(char **tab)
 {
 	int	i;
 
@@ -50,7 +50,7 @@ void	free_cmds(t_cmd *cmds)
 	{
 		next_cmd = cmds->next;
 		cmds->next = NULL;
-		free_tab(cmds->argv);
+		free_str_tab(cmds->argv);
 		while (cmds->redirs)
 		{
 			next_redir = cmds->redirs->next;
@@ -64,12 +64,28 @@ void	free_cmds(t_cmd *cmds)
 	}
 }
 
-void	free_all(t_minish *minish)
+void	free_all(t_minish *minish, int end)
 {
 	if (minish->input)
 		free(minish->input);
 	if (minish->tokens)
+	{
 		free_tokens(minish->tokens);
+		minish->tokens = NULL;
+	}
 	if (minish->cmds)
+	{
 		free_cmds(minish->cmds);
+		minish->cmds = NULL;
+	}
+	if (end && minish->env)
+	{
+		if (minish->env->exported)
+			free(minish->env->exported);
+		if (minish->env->has_value)
+			free(minish->env->has_value);
+		if (minish->env->envp)
+			free_str_tab(minish->env->envp);
+		free(minish->env);
+	}
 }

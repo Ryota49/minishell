@@ -51,6 +51,8 @@ int	apply_redir_in(t_redir *redir)
 	char	*filename;
 
 	filename = remove_quotes_filename(redir->filename);
+	free (redir->filename);
+	redir->filename = filename;
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
@@ -71,6 +73,8 @@ int	apply_redir_out(t_redir *redir)
 	char	*filename;
 
 	filename = remove_quotes_filename(redir->filename);
+	free (redir->filename);
+	redir->filename = filename;
 	if (redir->type == TOKEN_APPEND)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	else

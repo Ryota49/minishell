@@ -1,37 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_is.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/10 14:21:31 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/19 11:10:50 by anfouger         ###   ########.fr       */
+/*   Created: 2026/04/19 07:59:20 by anfouger          #+#    #+#             */
+/*   Updated: 2026/04/19 07:59:37 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	builtin_echo(char **argv)
+int	ft_isalpha(int x)
 {
-	int	i;
-	int	flag;
+	if ((x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z'))
+		return (1);
+	else
+		return (0);
+}
 
-	i = 1;
-	flag = 0;
-	if (argv[i] && ft_strcmp(argv[i], "-n"))
-	{
-		flag = 1;
-		i++;
-	}
-	while (argv[i])
-	{
-		printf("%s", argv[i]);
-		if (argv[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (!flag)
-		printf("\n");
-	return (0);
+int	ft_isdigit(int x)
+{
+	if (x >= '0' && x <= '9')
+		return (1);
+	else
+		return (0);
+}
+
+int	ft_isalnum(int x)
+{
+	if (ft_isdigit(x) || ft_isalpha(x))
+		return (8);
+	else
+		return (0);
 }

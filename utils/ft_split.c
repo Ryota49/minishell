@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:37 by anfouger          #+#    #+#             */
-/*   Updated: 2026/03/10 13:36:15 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/24 10:25:43 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	fill_tab(char **new, char const *s, char c)
 			new[j] = worddup(&s[i], c);
 			if (!new[j])
 			{
-				free_tab(new);
+				free_str_tab(new);
 				return (0);
 			}
 			j++;

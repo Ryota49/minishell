@@ -52,7 +52,7 @@ static void	handle_heredoc(t_minish *minish, t_redir *redir)
 	if (fd < 0)
 	{
 		perror("heredoc");
-		minish->g_exit_status = 1;
+		minish->exit_status = 1;
 		return ;
 	}
 	write_heredoc(fd, redir->filename);
