@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 14:22:14 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/26 09:40:57 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/29 10:03:39 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,6 @@ static int	verif_export(char *str)
 			i++;
 		}
 		return (0);
-	}
-	return (0);
-}
-
-static int	export_no_args(t_minish *minish)
-{
-	int	i;
-
-	i = 0;
-	while (minish->env->envp[i])
-	{
-		if (!minish->env->has_value[i] && minish->env->exported[i])
-			printf("declare -x %s\n", minish->env->envp[i]);
-		else
-			print_export(minish->env->envp[i]);
-		i++;
 	}
 	return (0);
 }

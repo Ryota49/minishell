@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 09:39:32 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/24 11:45:26 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/28 11:49:43 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,32 @@ void	clean_str_tab(char **tab, int i)
 	while (i > 0)
 		free(tab[--i]);
 	free(tab);
+}
+
+int	*dup_tab_int_less_i(int *tab, int index, int old_len)
+{
+	int	*new_tab;
+	int	i;
+	int	j;
+	int	new_len;
+
+	new_len = old_len - 1;
+	new_tab = malloc(sizeof(int) * new_len);
+	if (!new_tab)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < new_len)
+	{
+		if (j == index)
+		{
+			j++;
+			continue ;
+		}
+		new_tab[i] = tab[j];
+		i++;
+		j++;
+	}
+	free(tab);
+	return (new_tab);
 }

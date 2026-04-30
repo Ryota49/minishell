@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 13:35:28 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/26 09:40:36 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/29 10:02:08 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_exec
 // --- Utils envp --- //
 t_env	*init_envp(char **tab);
 int		is_value_empty(char *str);
+t_env	sort_env(t_env old_env);
 
 // --- Utils Libft --- //
 size_t	ft_strlen(const char *s);
@@ -105,12 +106,14 @@ int		ft_isalpha(int x);
 int		ft_isdigit(int x);
 void	*ft_memset(void *s, int c, size_t n);
 void	*ft_calloc(size_t nmemb, size_t size);
+int		is_used(int *used, int x, int len);
 
 // --- Utils Tab --- //
 void	free_str_tab(char **s);
 char	**dup_str_tab(char **tab);
 void	clean_str_tab(char **tab, int i);
 int		*add_value_tab_int(int *tab, int value, int len_tab);
+int		*dup_tab_int_less_i(int *tab, int index, int length);
 
 // --- Utils Token --- //
 void	add_token(t_token **lst, t_token *new);
@@ -139,6 +142,7 @@ char	**add_var(t_env *env, char **tab, char *str);
 int		change_value(t_env *env, char *key, char *str);
 char	*get_key(char *str);
 void	print_export(char *str);
+int		export_no_args(t_minish *minish);
 
 // --- Signals --- //
 void	handle_sigint(int sig);
@@ -192,7 +196,7 @@ int		apply_redir_in(t_redir *redir);
 
 /* child process functions */
 void	child_process(t_minish *minish, t_cmd *cmd, int i, t_exec *exec);
-void	exec_external(t_minish *minish, t_exec *exec);
+void	exec_external(t_minish *minish, t_cmd *cmd, t_exec *exec);
 void	setup_pipes_child(int i, int nb_cmds, int **pipes);
 
 // --- Free --- //
@@ -216,6 +220,9 @@ void	call_free_all(char *path, t_minish *minish, t_exec *exec);
 void	free_minish_exit_zero(t_minish *minish, t_exec *exec);
 void	free_minish_exit_one(t_minish *minish, t_exec *exec);
 void	free_child_pipes(t_exec *exec);
+
+/* error command not found exec external */
+void	command_not_found_exit(t_minish *minish, t_exec *exec);
 
 void	exit_minish(void);
 

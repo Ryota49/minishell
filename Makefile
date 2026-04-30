@@ -64,6 +64,7 @@ SRCS    = minishell.c \
 		$(UTILS_DIR)/utils_exec.c \
 		$(UTILS_DIR)/utils_builtin.c \
 		$(UTILS_DIR)/utils_envp.c \
+		$(UTILS_DIR)/utils_export.c \
 		$(EXEC_DIR)/check_builtins.c \
 		$(EXEC_DIR)/execution.c \
 		$(EXEC_DIR)/execution_utils.c \

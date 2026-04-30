@@ -64,29 +64,23 @@ void	check_access(t_minish *minish, t_cmd *cmd, t_exec *exec)
 	}
 }
 
-void	exec_external(t_minish *minish, t_exec *exec)
+void	exec_external(t_minish *minish, t_cmd *cmd, t_exec *exec)
 {
 	char	*path;
 	int		ret;
 
 	path = NULL;
-	if (minish->cmds->argv[0][0] == '.' || minish->cmds->argv[0][0] == '/')
+	if (cmd->argv[0][0] == '.' || cmd->argv[0][0] == '/')
 	{
-		check_access(minish, minish->cmds, exec);
-		ret = execve(minish->cmds->argv[0],
-				minish->cmds->argv, minish->env->envp);
+		check_access(minish, cmd, exec);
+		ret = execve(cmd->argv[0], cmd->argv, minish->env->envp);
 	}
 	else
 	{
-		path = resolve_cmd(minish->cmds->argv[0], minish->env->envp);
+		path = resolve_cmd(cmd->argv[0], minish->env->envp);
 		if (!path)
-		{
-			ft_putstr_fd("minishell: command not found\n", 2);
-			free_child_pipes(exec);
-			free_all(minish, 1);
-			_exit(127);
-		}
-		ret = execve(path, minish->cmds->argv, minish->env->envp);
+			command_not_found_exit(minish, exec);
+		ret = execve(path, cmd->argv, minish->env->envp);
 	}
 	check_ret_value(ret, path, minish, exec);
 	call_free_all(path, minish, exec);
@@ -107,15 +101,16 @@ void	child_process(t_minish *minish, t_cmd *cmd, int i, t_exec *exec)
 		if (apply_redirs(cmd->redirs))
 			free_minish_exit_one(minish, exec);
 	}
-	close_all_pipes(exec->pipes, exec->nb_cmds - 1);
 	if (!cmd->argv || !cmd->argv[0] || cmd->argv[0][0] == '\0')
 		free_minish_exit_zero(minish, exec);
+	close_all_pipes(exec->pipes, exec->nb_cmds - 1);
 	if (is_builtin(cmd->argv[0]))
 	{
 		ret = exec_builtin(cmd, minish, 1);
-		free_child_pipes(exec);
+		close_all_pipes(exec->pipes, exec->nb_cmds - 1);
+		free_pipes(exec->pipes, exec->nb_cmds - 1);
 		free_all(minish, 1);
 		_exit(ret);
 	}
-	exec_external(minish, exec);
+	exec_external(minish, cmd, exec);
 }

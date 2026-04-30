@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 14:22:21 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/24 10:25:01 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/28 11:59:16 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	copy_tab_less_i(char **tab, char **new_tab, int index)
 	new_tab[i] = NULL;
 }
 
-static char	**dup_tab_less_i(char **tab, int index)
+static char	**dup_tab_str_less_i(char **tab, int index)
 {
 	char	**new_tab;
 
@@ -55,7 +55,8 @@ static int	get_index(char **tab, char *key)
 	while (tab[i])
 	{
 		if (ft_strncmp(tab[i], key, ft_strlen(key)) == 0
-			&& tab[i][ft_strlen(key)] == '=')
+			&& (tab[i][ft_strlen(key)] == '='
+			|| tab[i][ft_strlen(key)] == '\0'))
 			return (i);
 		i++;
 	}
@@ -64,13 +65,26 @@ static int	get_index(char **tab, char *key)
 
 int	builtin_unset(t_minish *minish, char **argv)
 {
-	int		i;
+	int	i;
+	int	j;
 
 	if (!argv[1])
 		return (0);
-	i = get_index(minish->env->envp, argv[1]);
-	if (i == -1)
-		return (0);
-	minish->env->envp = dup_tab_less_i(minish->env->envp, i);
+	j = 1;
+	while (argv[j])
+	{
+		i = get_index(minish->env->envp, argv[j]);
+		if (i == -1)
+		{
+			j++;
+			continue ;
+		}
+		minish->env->envp = dup_tab_str_less_i(minish->env->envp, i);
+		minish->env->has_value = dup_tab_int_less_i(minish->env->has_value, i,
+				tab_str_len(minish->env->envp) + 1);
+		minish->env->exported = dup_tab_int_less_i(minish->env->exported, i,
+				tab_str_len(minish->env->envp) + 1);
+		j++;
+	}
 	return (0);
 }

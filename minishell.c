@@ -6,7 +6,7 @@
 /*   By: anfouger <anfouger@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 09:17:32 by anfouger          #+#    #+#             */
-/*   Updated: 2026/04/26 09:43:21 by anfouger         ###   ########.fr       */
+/*   Updated: 2026/04/29 08:50:19 by anfouger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ static t_minish	init_minish(int ac, char **av, char **envp)
 	return (minish);
 }
 
+static void	update_exit_status(t_minish *minish)
+{
+	minish->exit_status = g_signal;
+	g_signal = 0;
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_minish	minish;
@@ -42,7 +48,7 @@ int	main(int ac, char **av, char **envp)
 		add_history(minish.input);
 		minish.tokens = tokenize(minish.input);
 		if (g_signal != 0)
-			minish.exit_status = g_signal;
+			update_exit_status(&minish);
 		minish.cmds = expansion(minish, parser(&minish, minish.tokens));
 		signal(SIGINT, SIG_IGN);
 		if (minish.cmds)

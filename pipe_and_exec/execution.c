@@ -96,7 +96,11 @@ static void	exec_multi(t_minish *minish, t_exec *exec)
 
 	pids = malloc(sizeof(pid_t) * exec->nb_cmds);
 	if (!pids)
+	{
+		close_all_pipes(exec->pipes, exec->nb_cmds - 1);
+		free_pipes(exec->pipes, exec->nb_cmds - 1);
 		return ;
+	}
 	if (fork_all(minish, exec, pids) < 0)
 	{
 		close_all_pipes(exec->pipes, exec->nb_cmds - 1);
